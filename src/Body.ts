@@ -1,0 +1,174 @@
+import React from 'react'
+import { css } from '@emotion/core'
+import { Grid, ArrowKeyStepper } from 'react-virtualized'
+import Cell from './Cell'
+import sharedStyles from './styles'
+
+class Body extends React.Component {
+  renderCell = ({ columnIndex, selectedCell, editingCell, key, rowIndex, style }) => {
+    const { rowGetter, getColumn, onEditDone, rowCount, showAddRow, readOnly } = this.props
+
+    if (columnIndex < 1) return
+    if (showAddRow && rowIndex === rowCount) return
+
+    const isSelected = (columnIndex === selectedCell.columnIndex && rowIndex === selectedCell.rowIndex) ||
+      (columnIndex === selectedCell.columnIndex && selectedCell.rowIndex === null) ||
+      (rowIndex === selectedCell.rowIndex && selectedCell.columnIndex === null)
+    const isEditing = editingCell && columnIndex === editingCell.columnIndex && rowIndex === editingCell.rowIndex
+
+    const row = rowGetter(rowIndex)
+    const column = getColumn(columnIndex)
+
+    if (!column || !row) return null
+
+    const value = isEditing && editingCell.updatedValue ? editingCell.updatedValue : row[column.key]
+
+    const onSelectCell = () => {
+      if (isEditing) return
+      this.props.selectCell({
+        columnIndex,
+        rowIndex,
+      })
+    }
+
+    const onEditCell = () => {
+      this.props.editCell({
+        columnIndex,
+        rowIndex,
+      })
+    }
+
+    const onChange = (updatedValue) => {
+      this.props.editCell({
+        columnIndex,
+        rowIndex,
+        updatedValue,
+      })
+    }
+
+    return (
+      <Cell
+        key={key}
+        value={value}
+        updatedValue={isEditing && editingCell.updatedValue}
+        style={style}
+        isSelected={isSelected}
+        isEditing={isEditing}
+        onClick={onSelectCell}
+        onDoubleClick={onEditCell}
+        onChange={onChange}
+        onEditDone={onEditDone}
+        component={column.component}
+        readOnly={readOnly}
+      />
+    )
+  }
+
+  onSelectChange = ({ scrollToRow, scrollToColumn }) => {
+    this.props.selectCell({
+      rowIndex: scrollToRow,
+      columnIndex: scrollToColumn,
+    })
+  }
+
+  getColumnWidths = () => {
+    const { getColumnWidth, columnCount, estimatedColumnWidth } = this.props
+    let total = 0
+    for (let index = 1; index < columnCount; index++) {
+      total += getColumnWidth({ index }) || estimatedColumnWidth || 75
+    }
+    return total
+  }
+
+  render () {
+    const {
+      innerRef,
+      onScroll,
+      selectedCell,
+      scrolledToCell,
+      editingCell,
+      overscanColumnCount,
+      overscanRowCount,
+      columnCount,
+      rowCount,
+      totalHeight,
+      totalWidth,
+      rowHeight,
+      getColumnWidth,
+      estimatedColumnWidth,
+      showAddRow,
+      noHeader,
+    } = this.props
+
+    return (
+      <ArrowKeyStepper
+        isControlled
+        disabled={!!editingCell}
+        onScrollToChange={this.onSelectChange}
+        scrollToColumn={scrolledToCell.columnIndex}
+        scrollToRow={scrolledToCell.rowIndex}
+        columnCount={columnCount}
+        rowCount={showAddRow ? rowCount + 1 : rowCount}
+        mode='cells'
+      >
+        {({ onSectionRendered, scrollToColumn, scrollToRow }) => (
+          <div
+            style={{
+              height: totalHeight - rowHeight,
+              width: totalWidth,
+            }}
+          >
+            <Grid
+              ref={innerRef}
+              css={styles.bodyGrid}
+              onSectionRendered={onSectionRendered}
+              cellRenderer={({ columnIndex, key, rowIndex, style }) => (
+                this.renderCell({
+                  columnIndex,
+                  key,
+                  rowIndex,
+                  selectedCell,
+                  editingCell,
+                  style,
+                })
+              )}
+              scrollToColumn={scrollToColumn}
+              scrollToRow={scrollToRow}
+              estimatedColumnSize={estimatedColumnWidth}
+              columnWidth={getColumnWidth}
+              columnCount={columnCount}
+              height={totalHeight - (noHeader ? 0 : rowHeight)}
+              onScroll={onScroll}
+              overscanColumnCount={overscanColumnCount}
+              overscanRowCount={overscanRowCount}
+              rowHeight={rowHeight}
+              rowCount={showAddRow ? rowCount + 1 : rowCount}
+              width={totalWidth}
+            />
+          </div>
+        )}
+      </ArrowKeyStepper>
+    )
+  }
+}
+
+const styles = {
+  bodyGrid: css`
+    width: 100%;
+    outline: none;
+  `,
+  addRow: theme => css`
+    ${sharedStyles.cell(theme)}
+    border-bottom: 0;
+    background: ${theme?.colors?.base0 || '#fff'};
+    color: ${theme?.colors?.base50 || '#9ba1a7'};
+    font-size: 0.9em;
+    font-weight: 600;
+    :hover {
+      background: ${theme?.colors?.base10 || '#eee'};
+      cursor: pointer;
+    }
+  `,
+}
+
+export default Body

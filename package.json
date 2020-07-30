@@ -1,7 +1,7 @@
 {
-  "name": "@1productaweek/npm-starter",
+  "name": "@1productaweek/react-virtualized-grid",
   "version": "0.1.0",
-  "description": "NPM starter package.",
+  "description": "Grid component, powered by React-Virtualized",
   "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf dist",
@@ -17,7 +17,7 @@
   ],
   "author": "Calum Moore",
   "license": "MIT",
-  "homepage": "https://github.com/1productaweek/npm-starter",
+  "homepage": "https://github.com/1productaweek/react-virtualized-grid",
   "devDependencies": {
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.10.5",
@@ -75,7 +75,18 @@
     "uglifyjs-webpack-plugin": "^2.2.0",
     "watch": "^1.0.2"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.14",
+    "dom-helpers": "^5.1.0",
+    "emotion-theming": "^10.0.27",
+    "lodash": "^4.17.15",
+    "react-draggable": "^4.0.3",
+    "react-keyboard-event-handler": "^1.5.1",
+    "react-outside-click-handler": "^1.2.4",
+    "react-tiny-popover": "^4.0.0",
+    "react-virtualized": "^9.21.1"
+  },
   "peerDependencies": {
     "react": "^16.13.1"
   },
