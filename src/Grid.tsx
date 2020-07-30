@@ -2,6 +2,7 @@ import React, { memo } from 'react'
 import { css } from '@emotion/core'
 import isFunction from 'lodash/isFunction'
 import isEqual from 'lodash/isEqual'
+import get from 'lodash/get'
 import { ScrollSync, AutoSizer, ScrollParams, Grid } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 import OutsideClickHandler from 'react-outside-click-handler'
@@ -62,7 +63,7 @@ class VGrid extends React.Component<GridProps, GridState> {
     if (!columnIndex || !rowIndex) return
     const column = this.getColumn(columnIndex)
     const row = this.props.rowGetter(rowIndex)
-    return column?.key ? row[column?.key] : null
+    return column?.key ? get(row, column?.key) : null
   }
 
   getColumn = (columnIndex: number) => {
