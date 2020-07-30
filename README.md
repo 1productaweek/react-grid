@@ -3,9 +3,9 @@
 Virtualized grid based on [React Virtulalized](https://github.com/bvaughn/react-virtualized). Uses [@emtion](https://emotion.sh/) for styling.
 
 
-### Usage
+### Demo
 
-TBC
+https://react-virtualized-grid.netlify.app
 
 
 ### Made by 1PAW
