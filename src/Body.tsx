@@ -1,6 +1,6 @@
 import React, { useCallback, forwardRef } from 'react'
 import { css } from '@emotion/core'
-import { Grid, ArrowKeyStepper, Index, ScrollParams, GridCellProps } from 'react-virtualized'
+import { Grid, ArrowKeyStepper, ScrollParams, GridCellProps } from 'react-virtualized'
 import Cell from './Cell'
 import sharedStyles from './styles'
 import { Ref, CellRef, CellEditRef, Column } from './types'
@@ -84,9 +84,9 @@ export interface BodyProps {
   overscanRowCount: number
   showAddRow: boolean
 
-  getColumn: (columnIndex: number) => Column
+  getColumn: (columnIndex: number) => Column|null
+  getColumnWidth: (columnIndex: number) => number
   columnCount: number
-  getColumnWidth: (params: Index) => number
   estimatedColumnWidth: number
   overscanColumnCount: number
 
@@ -154,7 +154,7 @@ function Body (props: BodyProps, ref: Ref<Grid>) {
             scrollToColumn={scrollToColumn}
             scrollToRow={scrollToRow}
             estimatedColumnSize={estimatedColumnWidth}
-            columnWidth={getColumnWidth}
+            columnWidth={({ index }) => getColumnWidth(index)}
             columnCount={columnCount}
             height={totalHeight - (noHeader ? 0 : rowHeight)}
             onScroll={onScroll}

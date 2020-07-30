@@ -11,7 +11,7 @@ export interface HeaderCellProps {
   column: Column
   columnIndex: number
   menuData: MenuItem[]
-  onResize: (offset: number) => void
+  onResize?: (offset: number) => void
   onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   style?: React.CSSProperties
 }
@@ -64,7 +64,7 @@ function HeaderCell ({
         <div css={styles.title}>
           {column.title}
         </div>
-        <HeaderDragHandle onResize={onResize} />
+        {onResize && <HeaderDragHandle onResize={onResize} />}
       </div>
     </Popover>
   )

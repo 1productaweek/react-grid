@@ -2,20 +2,19 @@ import { MutableRefObject } from 'react'
 import { Index } from 'react-virtualized'
 
 export interface BaseProps {
-  rowHeight: number
-  totalWidth: number
   scrollLeft: number
   overscanColumnCount?: number
   columnCount: number
 }
 
-export interface GridProps extends BaseProps {
+export interface GridProps {
   isLoading: boolean
   readOnly: boolean
   noHeader: boolean
+  totalWidth: number
 
   gutterWidth: number
-  gutterOffset?: number
+  gutterOffset: number
 
   onRowsChange: (change: {
     fromRow: number
@@ -25,15 +24,15 @@ export interface GridProps extends BaseProps {
   rowCount: number
   rowHeight: number
   rowMenu: MenuItem[]
-  overscanRowCount?: number
+  overscanRowCount: number
   rowGetter: (rowIndex: number) => Record<string, any>
   onAddRow: (count: number) => void
   onRowClick: (columnIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 
   columns: Column[]
-  columnMenu?: MenuItem[]
-  estimatedColumnWidth?: number
-  overscanColumnCount?: number
+  columnMenu: MenuItem[]
+  estimatedColumnWidth: number
+  overscanColumnCount: number
   onColumnResize?: (columnIndex: number, offset: number) => void
   onAddColumn?: (count: number) => void
   onColumnClick?: (columnIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
@@ -43,21 +42,6 @@ export interface GridProps extends BaseProps {
   scrolledToCell: CellRef
   editingCell: CellEditRef|null
 }
-
-export interface CellProps {
-  rowHeight: number
-  totalWidth: number
-  scrollLeft: number
-  overscanColumnCount: number
-  columnCount: number
-  getColumnWidth: (params: Index) => number
-  height: number
-  estimatedColumnWidth: number
-  onColumnResize: (columnIndex: number, offset: number) => void
-  onColumnClick: (columnIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
-  theme: any
-}
-
 export interface GridState {
   selectedCell: CellRef
   scrolledToCell: CellRef

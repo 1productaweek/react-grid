@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react'
 import { css } from '@emotion/core'
-import { Grid, Index, GridCellProps } from 'react-virtualized'
+import { Grid, GridCellProps } from 'react-virtualized'
 import scrollbarSize from 'dom-helpers/scrollbarSize'
 import HeaderCell from './HeaderCell'
 import sharedStyles from './styles'
@@ -32,6 +32,8 @@ export const renderHeaderCell = withTheme(({
 
   const column = getColumn(columnIndex)
 
+  if (!column) return null
+
   return (
     <HeaderCell
       key={key}
@@ -40,7 +42,7 @@ export const renderHeaderCell = withTheme(({
       columnIndex={columnIndex}
       menuData={columnMenu}
       onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onColumnClick && onColumnClick(columnIndex, e)}
-      onResize={(offset: number) => onColumnResize(columnIndex - 1, offset)}
+      onResize={onColumnResize ? (offset: number) => onColumnResize(columnIndex - 1, offset) : undefined}
     />
   )
 })
@@ -48,20 +50,19 @@ export const renderHeaderCell = withTheme(({
 export interface HeaderProps {
   // TODO: what is the difference between these?!
   rowHeight: number
-  height: number
   totalWidth: number
   scrollLeft: number
 
-  getColumn: (columnIndex: number) => Column
+  getColumn: (columnIndex: number) => Column|null
   columnMenu: MenuItem[]
   columnCount: number
   overscanColumnCount: number
-  getColumnWidth: (params: Index) => number
+  getColumnWidth: (columnIndex: number) => number
   estimatedColumnWidth: number
-  onColumnResize: (columnIndex: number, offset: number) => void
-  onColumnClick: (columnIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
-  onAddColumn: (count: number) => void
-  showAddColumn: boolean
+  onColumnResize?: (columnIndex: number, offset: number) => void
+  onColumnClick?: (columnIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  onAddColumn?: (count: number) => void
+  showAddColumn?: boolean
 
   theme: any
 }
@@ -89,7 +90,7 @@ function Header (props: HeaderProps, ref: Ref<Grid>) {
       <Grid
         ref={ref}
         css={styles.headerGrid}
-        columnWidth={getColumnWidth}
+        columnWidth={({ index }) => getColumnWidth(index)}
         estimatedColumnSize={estimatedColumnWidth}
         columnCount={showAddColumn ? columnCount + 1 : columnCount}
         height={rowHeight}

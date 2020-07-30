@@ -18,6 +18,7 @@ class VGrid extends React.Component<GridProps, GridState> {
   static defaultProps = {
     rowHeight: 28,
     columns: [],
+    gutterOffset: 1,
     gutterWidth: 30,
     estimatedColumnWidth: 75,
     overscanColumnCount: 0,
@@ -38,6 +39,7 @@ class VGrid extends React.Component<GridProps, GridState> {
     editingCell: null,
   } as GridState
 
+  // eslint-disable-next-line camelcase
   UNSAFE_componentWillUpdate (nextProps: GridProps) {
     const { columns } = this.props
     if (!isEqual(getWidths(columns), getWidths(nextProps.columns))) {
@@ -72,7 +74,7 @@ class VGrid extends React.Component<GridProps, GridState> {
     if (columnIndex === 0 || columnIndex > columns.length) return gutterWidth
 
     const column = this.getColumn(columnIndex)
-    return column?.width || estimatedColumnWidth
+    return column?.width || estimatedColumnWidth || 50
   }
 
   selectCell = (cell: CellRef|((cell: CellRef) => CellRef)) => {
@@ -323,11 +325,9 @@ class VGrid extends React.Component<GridProps, GridState> {
                                 readOnly={readOnly}
                                 editCell={this.editCell}
                                 selectCell={this.selectCell}
-                                scrollToCell={this.scrollToCell}
                                 getColumn={this.getColumn}
                                 getColumnWidth={this.getColumnWidth}
                                 estimatedColumnWidth={estimatedColumnWidth}
-                                onAddRow={onAddRow}
                                 showAddRow={!!onAddRow}
                                 noHeader={noHeader}
                               />
