@@ -79,10 +79,10 @@ const rowMenu = [{
   onClick: action('Delete'),
 }]
 
-storiesOf('Sheet', module)
+storiesOf('Grid', module)
   .add('Default', () => (
     <div style={styles}>
-      <Sheet
+      <Grid
         columns={columns}
         rowCount={rows.length}
         rowGetter={i => rows[i]}
@@ -92,7 +92,7 @@ storiesOf('Sheet', module)
   ))
   .add('Selected Cell', () => (
     <div style={styles}>
-      <Sheet
+      <Grid
         columns={columns}
         rowCount={rows.length}
         rowGetter={i => rows[i]}
@@ -103,7 +103,7 @@ storiesOf('Sheet', module)
   ))
   .add('Selected Col', () => (
     <div style={styles}>
-      <Sheet
+      <Grid
         columns={columns}
         rowCount={rows.length}
         rowGetter={i => rows[i]}
@@ -114,7 +114,7 @@ storiesOf('Sheet', module)
   ))
   .add('Selected Row', () => (
     <div style={styles}>
-      <Sheet
+      <Grid
         columns={columns}
         rowCount={rows.length}
         rowGetter={i => rows[i]}
@@ -125,7 +125,7 @@ storiesOf('Sheet', module)
   ))
   .add('Add Buttons', () => (
     <div style={{ ...styles, width: 200 }}>
-      <Sheet
+      <Grid
         columns={columns}
         rowCount={rows.length}
         rowGetter={i => rows[i]}
@@ -139,7 +139,7 @@ storiesOf('Sheet', module)
   ))
   .add('Read-only', () => (
     <div style={styles}>
-      <Sheet
+      <Grid
         columns={columns}
         rowCount={rows.length}
         rowGetter={i => rows[i]}
@@ -155,7 +155,7 @@ storiesOf('Sheet', module)
     <State initialState={columns}>
       {(selection, setSelection) => (
         <div style={styles}>
-          <Sheet
+          <Grid
             columns={columns}
             rowCount={rows.length}
             rowGetter={i => rows[i]}
@@ -181,7 +181,7 @@ storiesOf('Sheet', module)
     <State initialState={columns}>
       {(columns, setColumns) => (
         <div style={styles}>
-          <Sheet
+          <Grid
             columns={columns}
             rowCount={rows.length}
             rowGetter={i => rows[i]}
@@ -203,7 +203,7 @@ storiesOf('Sheet', module)
     <State initialState={rows}>
       {(rows, setRows) => (
         <div style={styles}>
-          <Sheet
+          <Grid
             columns={columns}
             rowCount={rows.length}
             rowGetter={i => rows[i]}
@@ -226,7 +226,7 @@ storiesOf('Sheet', module)
     <State initialState={rows}>
       {(rows, setRows) => (
         <div style={styles}>
-          <Sheet
+          <Grid
             noHeader
             columns={columns}
             rowCount={rows.length}
