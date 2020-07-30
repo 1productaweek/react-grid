@@ -3,19 +3,6 @@ import { css } from '@emotion/core'
 import isString from 'lodash/isString'
 import { MenuItem } from './types'
 
-export interface MenuItemProps {
-  children: React.ReactNode
-  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
-}
-
-export function MenuItem ({ children, ...props }: MenuItemProps) {
-  return (
-    <div css={styles.menuItem} {...props}>
-      {children}
-    </div>
-  )
-}
-
 export interface MenuProps {
   data: MenuItem[]
   context: any
@@ -25,15 +12,17 @@ export interface MenuProps {
 function Menu ({ data, context, onRequestClose }: MenuProps) {
   const menuItemsEl = data.map(({ text, onClick }, i) => {
     return (
-      <MenuItem
+      <div
         key={isString(text) ? text : i}
         onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
           if (onClick) onClick(context, e)
           onRequestClose()
         }}
+        css={styles.menuItem}
+        {...props}
       >
         {text}
-      </MenuItem>
+      </div>
     )
   })
 
