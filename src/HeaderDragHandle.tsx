@@ -27,8 +27,7 @@ function HeaderDragHandle ({ onResize, ...props }: HeaderDragHandleProps) {
 const styles = {
   dragHandle: css`
     with: 3px;
-    background: #000;
-
+    // background: #000;
   `,
 }
 
