@@ -1,6 +1,6 @@
 # React Virtualized Grid
 
-Virtualized grid based on [React Virtulalized](https://github.com/bvaughn/react-virtualized). Uses [@emtion](https://emotion.sh/) for styling.
+Virtualized grid based on [React Virtulalized](https://github.com/bvaughn/react-virtualized). Uses [@emotion](https://emotion.sh/) for styling.
 
 ### Install
 
