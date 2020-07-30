@@ -8,7 +8,7 @@ import { MenuItem } from './types'
 
 export interface GutterCellProps {
   rowIndex: number
-  menuData: MenuItem[]
+  menuData?: MenuItem[]
   offset?: number
   style?: React.CSSProperties
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
@@ -25,6 +25,21 @@ function GutterCell ({ rowIndex, menuData, offset = 1, style, onClick }: GutterC
   }
 
   const cellStyles = [sharedStyles.cell(theme), styles.gutterCell(theme, isOpen)]
+  const el = (
+    <div
+      ref={ref}
+      onContextMenu={onContextMenu}
+      css={cellStyles}
+      style={style}
+      onClick={onClick}
+    >
+      {rowIndex + offset}
+    </div>
+  )
+
+  if (!menuData) {
+    return el
+  }
 
   return (
     <Popover
@@ -40,15 +55,7 @@ function GutterCell ({ rowIndex, menuData, offset = 1, style, onClick }: GutterC
       isOpen={isOpen}
       onClickOutside={() => setIsOpen(false)}
     >
-      <div
-        ref={ref}
-        onContextMenu={onContextMenu}
-        css={cellStyles}
-        style={style}
-        onClick={onClick}
-      >
-        {rowIndex + offset}
-      </div>
+      {el}
     </Popover>
   )
 }

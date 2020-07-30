@@ -4,14 +4,15 @@ import { Grid, GridCellProps } from 'react-virtualized'
 import GutterCell from './GutterCell'
 import scrollbarSize from 'dom-helpers/scrollbarSize'
 import sharedStyles from './styles'
-import { withTheme } from 'emotion-theming'
+import { useTheme } from 'emotion-theming'
 import { MenuItem } from './types'
 
 export interface GutterCellRenderer extends GridCellProps, GutterProps {
-  onRowClick: (rowIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  onRowClick?: (rowIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  theme?: any
 }
 
-const renderGutterCell = withTheme(({
+const renderGutterCell = ({
   // GutterProps
   rowCount, showAddRow, gutterOffset, rowMenu, onAddRow, theme,
 
@@ -41,7 +42,7 @@ const renderGutterCell = withTheme(({
       onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onRowClick && onRowClick(rowIndex, e)}
     />
   )
-})
+}
 
 export interface GutterProps {
   gutterOffset: number
@@ -50,14 +51,13 @@ export interface GutterProps {
   overscanRowCount: number
   rowHeight: number
   rowCount: number
-  rowMenu: MenuItem[]
-  showAddRow: boolean
-  onAddRow: (count: number) => void
-  noHeader: boolean
+  rowMenu?: MenuItem[]
+  showAddRow?: boolean
+  onAddRow?: (count: number) => void
+  noHeader?: boolean
   totalHeight: number
   scrollTop: number
-  onRowClick: (rowIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
-  theme: any
+  onRowClick?: (rowIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
 function Gutter (props: GutterProps) {
@@ -72,8 +72,10 @@ function Gutter (props: GutterProps) {
     showAddRow,
     noHeader,
     onRowClick,
-    theme,
   } = props
+
+  const theme: any = useTheme()
+
   return (
     <div
       css={styles.gutterGridContainer}
@@ -91,6 +93,7 @@ function Gutter (props: GutterProps) {
           ...props,
           ...renderProps,
           onRowClick,
+          theme,
         })}
         columnWidth={gutterWidth}
         columnCount={1}
@@ -127,4 +130,4 @@ const styles = {
   `,
 }
 
-export default withTheme(Gutter)
+export default Gutter

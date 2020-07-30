@@ -1,46 +1,38 @@
 import { MutableRefObject } from 'react'
-import { Index } from 'react-virtualized'
-
-export interface BaseProps {
-  scrollLeft: number
-  overscanColumnCount?: number
-  columnCount: number
-}
 
 export interface GridProps {
-  isLoading: boolean
-  readOnly: boolean
-  noHeader: boolean
-  totalWidth: number
+  isLoading?: boolean
+  readOnly?: boolean
+  noHeader?: boolean
 
   gutterWidth: number
   gutterOffset: number
 
-  onRowsChange: (change: {
+  onRowsChange?: (change: {
     fromRow: number
     toRow: number
     updated: Record<string, any>
   }) => void
   rowCount: number
   rowHeight: number
-  rowMenu: MenuItem[]
+  rowMenu?: MenuItem[]
   overscanRowCount: number
   rowGetter: (rowIndex: number) => Record<string, any>
-  onAddRow: (count: number) => void
-  onRowClick: (columnIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  onAddRow?: (count: number) => void
+  onRowClick?: (columnIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 
   columns: Column[]
-  columnMenu: MenuItem[]
+  columnMenu?: MenuItem[]
   estimatedColumnWidth: number
   overscanColumnCount: number
   onColumnResize?: (columnIndex: number, offset: number) => void
   onAddColumn?: (count: number) => void
   onColumnClick?: (columnIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 
-  onSelectionChange: (cell: CellRef) => void
-  selectedCell: CellRef
-  scrolledToCell: CellRef
-  editingCell: CellEditRef|null
+  onSelectionChange?: (cell: CellRef) => void
+  selectedCell?: CellRef
+  scrolledToCell?: CellRef
+  editingCell?: CellEditRef|null
 }
 export interface GridState {
   selectedCell: CellRef
@@ -53,8 +45,8 @@ export interface CellEditRef extends CellRef {
 }
 
 export interface CellRef {
-  rowIndex: number
-  columnIndex: number
+  rowIndex: number|null
+  columnIndex: number|null
 }
 
 export interface Column {

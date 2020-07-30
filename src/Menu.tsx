@@ -19,7 +19,6 @@ function Menu ({ data, context, onRequestClose }: MenuProps) {
           onRequestClose()
         }}
         css={styles.menuItem}
-        {...props}
       >
         {text}
       </div>

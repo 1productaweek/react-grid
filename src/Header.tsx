@@ -11,7 +11,7 @@ export interface HeaderCellRendererProps extends GridCellProps, HeaderProps {
   theme: any
 }
 
-export const renderHeaderCell = withTheme(({
+export const renderHeaderCell = ({
   getColumn, columnCount, showAddColumn, onAddColumn, columnMenu, columnIndex,
   key, style, onColumnResize, onColumnClick, theme,
 }: HeaderCellRendererProps) => {
@@ -45,7 +45,7 @@ export const renderHeaderCell = withTheme(({
       onResize={onColumnResize ? (offset: number) => onColumnResize(columnIndex - 1, offset) : undefined}
     />
   )
-})
+}
 
 export interface HeaderProps {
   // TODO: what is the difference between these?!
@@ -54,7 +54,7 @@ export interface HeaderProps {
   scrollLeft: number
 
   getColumn: (columnIndex: number) => Column|null
-  columnMenu: MenuItem[]
+  columnMenu?: MenuItem[]
   columnCount: number
   overscanColumnCount: number
   getColumnWidth: (columnIndex: number) => number
@@ -98,6 +98,7 @@ function Header (props: HeaderProps, ref: Ref<Grid>) {
         cellRenderer={(renderProps) => renderHeaderCell({
           ...props,
           ...renderProps,
+          theme,
         })}
         rowHeight={rowHeight}
         rowCount={1}

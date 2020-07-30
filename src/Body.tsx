@@ -64,7 +64,7 @@ const renderCell = ({
       onChange={onChange}
       onEditDone={onEditDone}
       component={column.component}
-      readOnly={readOnly}
+      readOnly={!!readOnly}
     />
   )
 }
@@ -82,7 +82,7 @@ export interface BodyProps {
   rowCount: number
   rowHeight: number
   overscanRowCount: number
-  showAddRow: boolean
+  showAddRow?: boolean
 
   getColumn: (columnIndex: number) => Column|null
   getColumnWidth: (columnIndex: number) => number
@@ -90,8 +90,8 @@ export interface BodyProps {
   estimatedColumnWidth: number
   overscanColumnCount: number
 
-  noHeader: boolean
-  readOnly: boolean
+  noHeader?: boolean
+  readOnly?: boolean
   editCell: (ref: CellEditRef) => void
   selectCell: (ref: CellRef) => void
   onEditDone: () => void
@@ -128,8 +128,8 @@ function Body (props: BodyProps, ref: Ref<Grid>) {
       isControlled
       disabled={!!editingCell}
       onScrollToChange={onSelectChange}
-      scrollToColumn={scrolledToCell.columnIndex}
-      scrollToRow={scrolledToCell.rowIndex}
+      scrollToColumn={scrolledToCell.columnIndex || undefined}
+      scrollToRow={scrolledToCell.rowIndex || undefined}
       columnCount={columnCount}
       rowCount={showAddRow ? rowCount + 1 : rowCount}
       mode='cells'

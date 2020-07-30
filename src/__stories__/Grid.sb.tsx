@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import Grid from '../Grid'
+import '../grid.css'
 
 const styles = {
   margin: 30,
@@ -9,10 +10,10 @@ const styles = {
   width: 700,
   position: 'relative',
   border: '1px solid #eee',
-}
+} as any
 
 const State = ({ children, initialState }: any) => {
-  const [data, setData] = useState(initialState)
+  const [data, setData] = useState<any>(initialState)
   return children(data, setData)
 }
 
@@ -27,12 +28,12 @@ const Icon = () => {
 }
 
 const columns = [
-  { key: 'id', name: 'ID', editable: true, width: 40, icon: Icon },
-  { key: 'title', name: 'Title', editable: true },
-  { key: 'complete', name: 'Complete', editable: true, width: 300 },
-  { key: 'success', name: 'Success', width: 100 },
-  { key: 'started', name: 'Started At', width: 100 },
-  { key: 'custom', name: 'Custom', component: () => 'Custom!' },
+  { key: 'id', title: 'ID', editable: true, width: 40, icon: Icon },
+  { key: 'title', title: 'Title', editable: true },
+  { key: 'complete', title: 'Complete', editable: true, width: 300 },
+  { key: 'success', title: 'Success', width: 100 },
+  { key: 'started', title: 'Started At', width: 100 },
+  { key: 'custom', title: 'Custom', component: () => <div>Custom!</div> },
 ]
 
 const rows = [
@@ -153,7 +154,7 @@ storiesOf('Grid', module)
 
   .add('Controlled Selection', () => (
     <State initialState={columns}>
-      {(selection, setSelection) => (
+      {(selection: any, setSelection: any) => (
         <div style={styles}>
           <Grid
             columns={columns}
@@ -179,7 +180,7 @@ storiesOf('Grid', module)
 
   .add('Column State', () => (
     <State initialState={columns}>
-      {(columns, setColumns) => (
+      {(columns: any, setColumns: any) => (
         <div style={styles}>
           <Grid
             columns={columns}
@@ -201,7 +202,7 @@ storiesOf('Grid', module)
 
   .add('Edit', () => (
     <State initialState={rows}>
-      {(rows, setRows) => (
+      {(rows: any, setRows: any) => (
         <div style={styles}>
           <Grid
             columns={columns}
@@ -224,7 +225,7 @@ storiesOf('Grid', module)
 
   .add('No headings', () => (
     <State initialState={rows}>
-      {(rows, setRows) => (
+      {(rows: any) => (
         <div style={styles}>
           <Grid
             noHeader

@@ -10,7 +10,7 @@ import { Column, MenuItem } from './types'
 export interface HeaderCellProps {
   column: Column
   columnIndex: number
-  menuData: MenuItem[]
+  menuData?: MenuItem[]
   onResize?: (offset: number) => void
   onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   style?: React.CSSProperties
@@ -35,6 +35,28 @@ function HeaderCell ({
     )
   }
 
+  const el = (
+    <div
+      ref={ref}
+      onClick={onClick}
+      onContextMenu={onContextMenu}
+      style={style}
+      css={cellStyles}
+    >
+      {column.icon && (
+        <div css={styles.icon}>
+          {column.icon}
+        </div>
+      )}
+      <div css={styles.title}>
+        {column.title}
+      </div>
+      {onResize && <HeaderDragHandle onResize={onResize} />}
+    </div>
+  )
+
+  if (!menuData) return el
+
   return (
     <Popover
       position='bottom'
@@ -49,23 +71,7 @@ function HeaderCell ({
       isOpen={menuIsOpen}
       onClickOutside={() => setMenuIsOpen(false)}
     >
-      <div
-        ref={ref}
-        onClick={onClick}
-        onContextMenu={onContextMenu}
-        style={style}
-        css={cellStyles}
-      >
-        {column.icon && (
-          <div css={styles.icon}>
-            {column.icon}
-          </div>
-        )}
-        <div css={styles.title}>
-          {column.title}
-        </div>
-        {onResize && <HeaderDragHandle onResize={onResize} />}
-      </div>
+      {el}
     </Popover>
   )
 }

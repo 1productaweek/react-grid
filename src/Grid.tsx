@@ -16,15 +16,16 @@ const getWidths = (columns: Column[]) => columns.map(({ width }: Column) => widt
 
 class VGrid extends React.Component<GridProps, GridState> {
   static defaultProps = {
-    rowHeight: 28,
     columns: [],
-    gutterOffset: 1,
+
     gutterWidth: 30,
+    gutterOffset: 1,
+
     estimatedColumnWidth: 75,
     overscanColumnCount: 0,
+
+    rowHeight: 28,
     overscanRowCount: 5,
-    columnMenu: [],
-    rowMenu: [],
   }
 
   headerRef: null|Grid = null
@@ -58,6 +59,7 @@ class VGrid extends React.Component<GridProps, GridState> {
   }
 
   getCellValue = ({ columnIndex, rowIndex }: CellRef) => {
+    if (!columnIndex || !rowIndex) return
     const column = this.getColumn(columnIndex)
     const row = this.props.rowGetter(rowIndex)
     return column?.key ? row[column?.key] : null
@@ -86,9 +88,9 @@ class VGrid extends React.Component<GridProps, GridState> {
 
       // Skip update if at the end of the range
       if (columnIndex === 0 ||
-          columnIndex > maxColumn ||
-          rowIndex < 0 ||
-          rowIndex > maxRow // Additional minus for add row btn
+          (columnIndex && columnIndex > maxColumn) ||
+          (rowIndex && rowIndex < 0) ||
+          (rowIndex && rowIndex > maxRow) // Additional minus for add row btn
       ) return prevState
 
       const newSelection = { columnIndex, rowIndex }
@@ -125,7 +127,9 @@ class VGrid extends React.Component<GridProps, GridState> {
     const { editingCell } = this.state
     const { rowGetter } = this.props
 
-    if (editingCell === null) return
+    if (editingCell === null || !editingCell.rowIndex || !editingCell.columnIndex) {
+      return
+    }
 
     const column = this.getColumn(editingCell.columnIndex)
     const row = rowGetter(editingCell.rowIndex)
@@ -168,21 +172,21 @@ class VGrid extends React.Component<GridProps, GridState> {
     if (key === 'enter') {
       this.selectCell(({ columnIndex, rowIndex }) => ({
         columnIndex,
-        rowIndex: rowIndex + 1,
+        rowIndex: (rowIndex || 0) + 1,
       }))
       return
     }
     if (key === 'shift+enter') {
       this.selectCell(({ columnIndex, rowIndex }) => ({
         columnIndex,
-        rowIndex: rowIndex - 1,
+        rowIndex: (rowIndex || 0) - 1,
       }))
       return
     }
     if (key === 'tab') {
       e.preventDefault()
       this.selectCell(({ columnIndex, rowIndex }) => ({
-        columnIndex: columnIndex + 1,
+        columnIndex: (columnIndex || 0) + 1,
         rowIndex,
       }))
       return
@@ -190,7 +194,7 @@ class VGrid extends React.Component<GridProps, GridState> {
     if (key === 'shift+tab') {
       e.preventDefault()
       this.selectCell(({ columnIndex, rowIndex }) => ({
-        columnIndex: columnIndex - 1,
+        columnIndex: (columnIndex || 0) - 1,
         rowIndex,
       }))
       return

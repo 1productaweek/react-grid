@@ -8,14 +8,14 @@ export interface NotchCellRendererProps extends GridCellProps, NotchProps {
   theme: any
 }
 
-const notchCellRenderer = withTheme(({
+const notchCellRenderer = ({
   // GridCellProps
   key, style, theme,
 }: NotchCellRendererProps) => {
   return (
     <div key={key} style={style} css={sharedStyles.cell(theme)} />
   )
-})
+}
 
 export interface NotchProps {
   gutterWidth: number
@@ -40,6 +40,7 @@ function Notch (props: NotchProps) {
         cellRenderer={(renderProps) => notchCellRenderer({
           ...props,
           ...renderProps,
+          theme,
         })}
         width={gutterWidth}
         height={rowHeight}
