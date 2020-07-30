@@ -1,46 +1,39 @@
 import React, { useState, useRef } from 'react'
 import { css } from '@emotion/core'
-import Draggable from 'react-draggable'
+import { useTheme } from 'emotion-theming'
 import Popover from 'react-tiny-popover'
 import Menu from './Menu'
 import sharedStyles from './styles'
-import { useTheme } from 'emotion-theming'
-function HeaderDragHandle ({ onResize }) {
-  return (
-    <Draggable
-      axis='x'
-      defaultClassName='drag-handle'
-      defaultClassNameDragging='drag-handle-active'
-      onStop={(e, data) => onResize(data.x)}
-      position={{
-        x: 0,
-        y: 0,
-      }}
-      zIndex={999}
-    >
-      <div css={styles.dragHandle} />
-    </Draggable>
-  )
+import HeaderDragHandle from './HeaderDragHandle'
+import { Column, MenuItem } from './types'
+
+export interface HeaderCellProps {
+  column: Column
+  columnIndex: number
+  menuData: MenuItem[]
+  onResize: (offset: number) => void
+  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  style?: React.CSSProperties
 }
 
-const noop = () => null
-
-function HeaderCell ({ column, style, menuData, onResize, columnIndex, onClick }) {
-  const theme = useTheme()
+function HeaderCell ({
+  column, style, menuData, onResize, columnIndex, onClick,
+}: HeaderCellProps) {
+  const theme: any = useTheme()
   const [menuIsOpen, setMenuIsOpen] = useState(false)
-  const ref = useRef()
+  const ref = useRef<any>()
 
-  const onContextMenu = (e) => {
+  const onContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
     setMenuIsOpen(true)
   }
 
   const cellStyles = [sharedStyles.cell(theme), styles.headerCell(theme)]
   if (menuIsOpen) {
-    cellStyles.push(`background: ${theme?.colors?.base20 || '#dcdde1'};`)
+    cellStyles.push(
+      css`background: ${theme?.colors?.base20 || '#dcdde1'};`,
+    )
   }
-
-  const Icon = column.icon || noop
 
   return (
     <Popover
@@ -65,11 +58,11 @@ function HeaderCell ({ column, style, menuData, onResize, columnIndex, onClick }
       >
         {column.icon && (
           <div css={styles.icon}>
-            <Icon column={column} columnIndex={columnIndex} />
+            {column.icon}
           </div>
         )}
         <div css={styles.title}>
-          {column.title || column.name}
+          {column.title}
         </div>
         <HeaderDragHandle onResize={onResize} />
       </div>
@@ -78,7 +71,7 @@ function HeaderCell ({ column, style, menuData, onResize, columnIndex, onClick }
 }
 
 const styles = {
-  headerCell: theme => css`
+  headerCell: (theme: any) => css`
     display: flex;
     flex-direction: row;
     font-weight: 600;

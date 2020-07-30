@@ -2,7 +2,7 @@ import React, { memo } from 'react'
 import { css } from '@emotion/core'
 import isFunction from 'lodash/isFunction'
 import isEqual from 'lodash/isEqual'
-import { ScrollSync, AutoSizer } from 'react-virtualized'
+import { ScrollSync, AutoSizer, ScrollParams, Grid } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 import OutsideClickHandler from 'react-outside-click-handler'
 import KeyboardEventHandler from 'react-keyboard-event-handler'
@@ -10,10 +10,11 @@ import Notch from './Notch'
 import Gutter from './Gutter'
 import Header from './Header'
 import Body from './Body'
+import { CellRef, CellEditRef, Column, GridProps, GridState } from './types'
 
-const getWidths = columns => columns.map(({ width }) => width)
+const getWidths = (columns: Column[]) => columns.map(({ width }: Column) => width)
 
-class Sheet extends React.Component {
+class VGrid extends React.Component<GridProps, GridState> {
   static defaultProps = {
     rowHeight: 28,
     columns: [],
@@ -25,50 +26,56 @@ class Sheet extends React.Component {
     rowMenu: [],
   }
 
+  headerRef: null|Grid = null
+  bodyRef: null|Grid = null
+  gridRef: null|HTMLDivElement = null
+  scrollPos: ScrollParams|null = null
+  isUpdatingGrid = false
+
   state = {
     selectedCell: { rowIndex: 0, columnIndex: 0 },
     scrolledToCell: { rowIndex: 0, columnIndex: 0 },
     editingCell: null,
-  }
+  } as GridState
 
-  UNSAFE_componentWillUpdate (nextProps) {
+  UNSAFE_componentWillUpdate (nextProps: GridProps) {
     const { columns } = this.props
     if (!isEqual(getWidths(columns), getWidths(nextProps.columns))) {
-      this.headerRef.recomputeGridSize()
-      this.bodyRef.recomputeGridSize()
+      if (this.headerRef) this.headerRef.recomputeGridSize()
+      if (this.bodyRef) this.bodyRef.recomputeGridSize()
       this.isUpdatingGrid = true
     }
   }
 
-  onScroll = (pos) => {
+  onScroll = (pos: ScrollParams) => {
     if (this.isUpdatingGrid) {
-      if (this.bodyRef) this.bodyRef.scrollToPosition(this.scrollPos)
+      if (this.bodyRef) this.bodyRef.scrollToPosition(pos)
       this.isUpdatingGrid = false
     }
     this.scrollPos = pos
   }
 
-  getColumn = (index) => {
-    if (index === 0) return null
-    return this.props.columns[index - 1]
-  }
-
-  getCellValue = ({ columnIndex, rowIndex }) => {
+  getCellValue = ({ columnIndex, rowIndex }: CellRef) => {
     const column = this.getColumn(columnIndex)
     const row = this.props.rowGetter(rowIndex)
-    return row[column.key]
+    return column?.key ? row[column?.key] : null
   }
 
-  getColumnWidth = ({ index }) => {
+  getColumn = (columnIndex: number) => {
+    if (columnIndex === 0) return null
+    return this.props.columns[columnIndex - 1]
+  }
+
+  getColumnWidth = (columnIndex: number) => {
     const { columns, estimatedColumnWidth, gutterWidth } = this.props
     // Gutter and add column btn
-    if (index === 0 || index > columns.length) return gutterWidth
+    if (columnIndex === 0 || columnIndex > columns.length) return gutterWidth
 
-    const column = this.getColumn(index)
-    return column.width || estimatedColumnWidth
+    const column = this.getColumn(columnIndex)
+    return column?.width || estimatedColumnWidth
   }
 
-  selectCell = (cell) => {
+  selectCell = (cell: CellRef|((cell: CellRef) => CellRef)) => {
     this.setState((prevState) => {
       const { columnIndex, rowIndex } = isFunction(cell) ? cell(prevState.selectedCell) : cell
       const { columns, rowCount, onSelectionChange } = this.props
@@ -91,12 +98,13 @@ class Sheet extends React.Component {
       return {
         selectedCell: newSelection,
         scrolledToCell: newSelection,
+        editingCell: null,
       }
     })
     this.handleOnEditDone()
   }
 
-  editCell = (cell) => {
+  editCell = (cell: CellEditRef|null) => {
     // if (this.props.readOnly) return
     if (cell === null) {
       this.setState({ editingCell: null })
@@ -115,7 +123,7 @@ class Sheet extends React.Component {
     const { editingCell } = this.state
     const { rowGetter } = this.props
 
-    if (!editingCell) return
+    if (editingCell === null) return
 
     const column = this.getColumn(editingCell.columnIndex)
     const row = rowGetter(editingCell.rowIndex)
@@ -124,10 +132,12 @@ class Sheet extends React.Component {
       editingCell: null,
     })
 
-    if (!editingCell.updatedValue ||
-      row[column.key] === editingCell.updatedValue) return
+    if (!column?.key) return
 
-    if (this.props.onRowsChange) {
+    if (!editingCell?.updatedValue ||
+      row[column?.key] === editingCell.updatedValue) return
+
+    if (this.props.onRowsChange && editingCell) {
       this.props.onRowsChange({
         fromRow: editingCell.rowIndex,
         toRow: editingCell.rowIndex,
@@ -136,7 +146,7 @@ class Sheet extends React.Component {
     }
   }
 
-  scrollToCell = ({ columnIndex, rowIndex }) => {
+  scrollToCell = ({ columnIndex, rowIndex }: CellRef) => {
     this.setState({
       scrolledToCell: {
         columnIndex,
@@ -152,7 +162,7 @@ class Sheet extends React.Component {
     })
   }
 
-  handleOnKeyEvent = (key, e) => {
+  handleOnKeyEvent = (key: string, e: React.KeyboardEvent<HTMLDivElement>) => {
     if (key === 'enter') {
       this.selectCell(({ columnIndex, rowIndex }) => ({
         columnIndex,
@@ -189,7 +199,7 @@ class Sheet extends React.Component {
       })
     }
     if (key === 'esc') {
-      e.stopImmediatePropagation()
+      e.stopPropagation()
       return this.editCell(null)
     }
     if (this.state.selectedCell && !this.state.editingCell) {
@@ -243,13 +253,9 @@ class Sheet extends React.Component {
           <AutoSizer disableWidth>
             {({ height: totalHeight }) => (
               <ScrollSync>
-                {({
-                  onScroll,
-                  scrollLeft,
-                  scrollTop,
-                }) => {
+                {(scroll) => {
                   return (
-                    <div css={styles.grid} ref={ref => { this.gridRef = ref }} tabIndex='0'>
+                    <div css={styles.grid} ref={ref => { this.gridRef = ref }} tabIndex={0}>
                       {
                         isLoading && (<div css={styles.loadingPlaceholder}>Loading...</div>)
                       }
@@ -267,7 +273,7 @@ class Sheet extends React.Component {
                         rowHeight={rowHeight}
                         totalHeight={totalHeight}
                         rowCount={rowCount}
-                        scrollTop={scrollTop}
+                        scrollTop={scroll.scrollTop}
                         rowMenu={rowMenu}
                         showAddRow={!!onAddRow}
                         onAddRow={onAddRow}
@@ -280,10 +286,10 @@ class Sheet extends React.Component {
                             <div>
                               {!noHeader ? (
                                 <Header
-                                  innerRef={ref => { this.headerRef = ref }}
+                                  ref={ref => { this.headerRef = ref }}
                                   rowHeight={rowHeight}
                                   totalWidth={totalWidth}
-                                  scrollLeft={scrollLeft}
+                                  scrollLeft={scroll.scrollLeft}
                                   overscanColumnCount={overscanColumnCount}
                                   columnCount={columnCount}
                                   getColumn={this.getColumn}
@@ -297,12 +303,12 @@ class Sheet extends React.Component {
                                 />
                               ) : null}
                               <Body
-                                innerRef={ref => { this.bodyRef = ref }}
+                                ref={ref => { this.bodyRef = ref }}
                                 rowGetter={rowGetter}
                                 overscanColumnCount={overscanColumnCount}
                                 overscanRowCount={overscanRowCount}
-                                onScroll={pos => {
-                                  onScroll(pos)
+                                onScroll={(pos) => {
+                                  scroll.onScroll(pos)
                                   this.onScroll(pos)
                                 }}
                                 columnCount={onAddColumn ? columnCount + 1 : columnCount}
@@ -385,4 +391,4 @@ const styles = {
   `,
 }
 
-export default memo(Sheet)
+export default memo(VGrid)

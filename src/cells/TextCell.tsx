@@ -1,25 +1,32 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { css } from '@emotion/core'
 import isObject from 'lodash/isObject'
 import { withTheme, useTheme } from 'emotion-theming'
 
-function TextCell ({ innerRef, isEditing, onChange, value }) {
+export interface TextCellProps {
+  isEditing: boolean
+  onChange: (val: any) => void
+  value: any
+  readOnly?: boolean
+}
+
+function TextCell ({ isEditing, onChange, value }: TextCellProps, ref: any) {
   const theme = useTheme()
   const cellInnerEl = isEditing ? (
     <input
       value={getValue(value)}
-      onChange={(newVal) => {
+      onChange={(newVal: any) => {
         if (isObject(value)) onChange(JSON.parse(newVal))
         else onChange(newVal)
       }}
-      ref={innerRef}
+      ref={ref}
       css={styles.input(theme)}
     />
   ) : getValue(value)
   return cellInnerEl
 }
 
-function getValue (value) {
+function getValue (value: any) {
   if (isObject(value)) return JSON.stringify(value)
   if (value && value.toString) return value.toString()
   if (value === null) return ''
@@ -28,7 +35,7 @@ function getValue (value) {
 }
 
 const styles = {
-  input: theme => css`
+  input: (theme: any) => css`
     font-size: 100%;
     outline: none;
     width: 100%;
@@ -40,4 +47,4 @@ const styles = {
   `,
 }
 
-export default withTheme(TextCell)
+export default withTheme(forwardRef(TextCell))

@@ -1,4 +1,4 @@
-export { default } from './Sheet'
+export { default } from './Grid'
 export { default as Body } from './Body'
 export { default as Cell } from './Cell'
 export { default as Gutter } from './Gutter'
