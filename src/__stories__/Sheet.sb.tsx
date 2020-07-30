@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import Sheet from '../Sheet'
+import Grid from '../Grid'
 
 const styles = {
   margin: 30,
@@ -11,7 +11,7 @@ const styles = {
   border: '1px solid #eee',
 }
 
-const State = ({ children, initialState }) => {
+const State = ({ children, initialState }: any) => {
   const [data, setData] = useState(initialState)
   return children(data, setData)
 }
