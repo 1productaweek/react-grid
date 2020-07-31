@@ -25,6 +25,7 @@ function HeaderCell ({
 
   const onContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
+    if (!menuData) return
     setMenuIsOpen(true)
   }
 

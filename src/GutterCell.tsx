@@ -21,10 +21,12 @@ function GutterCell ({ rowIndex, menuData, offset = 1, style, onClick }: GutterC
 
   const onContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
+    if (!menuData) return
     setIsOpen(true)
   }
 
   const cellStyles = [sharedStyles.cell(theme), styles.gutterCell(theme, isOpen)]
+
   const el = (
     <div
       ref={ref}
