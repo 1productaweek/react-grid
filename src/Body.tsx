@@ -1,5 +1,6 @@
 import React, { useCallback, forwardRef } from 'react'
 import { css } from '@emotion/core'
+import get from 'lodash/get'
 import { Grid, ArrowKeyStepper, ScrollParams, GridCellProps } from 'react-virtualized'
 import Cell from './Cell'
 import sharedStyles from './styles'
@@ -27,7 +28,7 @@ const renderCell = ({
 
   if (!column || !row) return null
 
-  const value = isEditing && editingCell?.updatedValue ? editingCell.updatedValue : row[column.key]
+  const value = isEditing && editingCell?.updatedValue ? editingCell.updatedValue : get(row, column?.key)
 
   const onSelectCell = () => {
     if (isEditing) return
