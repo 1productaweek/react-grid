@@ -30,14 +30,15 @@ const Icon = () => {
 const columns = [
   { key: 'id', title: 'ID', editable: true, width: 40, icon: Icon },
   { key: 'title', title: 'Title', editable: true },
-  { key: 'complete', title: 'Complete', editable: true, width: 300 },
+  { key: 'complete', title: 'Complete', editable: true, width: 30 },
   { key: 'success', title: 'Success', width: 100 },
   { key: 'started', title: 'Started At', width: 100 },
+  { key: 'nested.object.value', title: 'Nested', width: 100 },
   { key: 'custom', title: 'Custom', component: () => <div>Custom!</div> },
 ]
 
 const rows = [
-  { id: 10, title: 'Task 1', complete: 20, success: true, started: new Date() },
+  { id: 10, title: 'Task 1', complete: 20, success: true, started: new Date(), nested: { object: { value: 11 } } },
   { id: 20, title: 'Task 2', complete: 40, success: true },
   { id: 30, title: 'Task 3', complete: 60, success: false },
   { id: 40, title: 'Task 4', complete: 20, success: true },
@@ -236,5 +237,24 @@ storiesOf('Grid', module)
           />
         </div>
       )}
+    </State>
+  ))
+
+  .add('Async Update', () => (
+    <State initialState={[{ id: 1 }]}>
+      {(rows: any, setRows: any) => {
+        setTimeout(() => {
+          setRows([{ id: rows[0].id + 1 }])
+        }, 1000)
+        return (
+          <div style={styles}>
+            <Grid
+              columns={columns}
+              rowCount={rows.length}
+              rowGetter={i => rows[i]}
+            />
+          </div>
+        )
+      }}
     </State>
   ))

@@ -41,8 +41,8 @@ function Cell (props: CellProps) {
   const inputRef = useRef<any>()
 
   useEffect(() => {
-
-  }, [isEditing])
+    if (!isEditing) setUpdatedValue(value)
+  }, [isEditing, setUpdatedValue, value])
 
   const onLocalChange = useCallback((e) => {
     if (readOnly) return
