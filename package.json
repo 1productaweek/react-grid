@@ -1,6 +1,6 @@
 {
   "name": "@1productaweek/react-virtualized-grid",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Grid component, powered by React-Virtualized",
   "main": "dist/index.js",
   "scripts": {
