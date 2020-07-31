@@ -2,16 +2,16 @@ import React, { useState, useRef } from 'react'
 import { css } from '@emotion/core'
 import { useTheme } from 'emotion-theming'
 import isFunction from 'lodash/isFunction'
-import Popover from 'react-tiny-popover'
+import Popover, { PopoverInfo } from 'react-tiny-popover'
 import Menu from './Menu'
 import sharedStyles from './styles'
 import HeaderDragHandle from './HeaderDragHandle'
-import { Column, MenuItem } from './types'
+import { Column, ColumnMenu } from './types'
 
 export interface HeaderCellProps {
   column: Column
   columnIndex: number
-  menu?: MenuItem[]
+  menu?: ColumnMenu
   onResize?: (offset: number) => void
   onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   style?: React.CSSProperties
@@ -63,7 +63,7 @@ function HeaderCell ({
     <Popover
       position='bottom'
       containerStyle={{ zIndex: '10' }}
-      content={isFunction(menu) ? () => menu({ columnIndex }) : () => (
+      content={isFunction(menu) ? (info: PopoverInfo) => menu({ columnIndex }, info) : () => (
         <Menu
           data={menu}
           onRequestClose={() => setMenuIsOpen(false)}

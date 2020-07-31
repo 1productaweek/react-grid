@@ -5,7 +5,7 @@ import GutterCell from './GutterCell'
 import scrollbarSize from 'dom-helpers/scrollbarSize'
 import sharedStyles from './styles'
 import { useTheme } from 'emotion-theming'
-import { MenuItem } from './types'
+import { RowMenu } from './types'
 
 export interface GutterCellRenderer extends GridCellProps, GutterProps {
   onRowClick?: (rowIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
@@ -51,7 +51,7 @@ export interface GutterProps {
   overscanRowCount: number
   rowHeight: number
   rowCount: number
-  rowMenu?: MenuItem[]
+  rowMenu?: RowMenu
   showAddRow?: boolean
   onAddRow?: (count: number) => void
   noHeader?: boolean

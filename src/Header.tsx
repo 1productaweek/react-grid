@@ -5,7 +5,7 @@ import scrollbarSize from 'dom-helpers/scrollbarSize'
 import HeaderCell from './HeaderCell'
 import sharedStyles from './styles'
 import { withTheme } from 'emotion-theming'
-import { Ref, MenuItem, Column } from './types'
+import { Ref, Column, ColumnMenu } from './types'
 
 export interface HeaderCellRendererProps extends GridCellProps, HeaderProps {
   theme: any
@@ -54,7 +54,7 @@ export interface HeaderProps {
   scrollLeft: number
 
   getColumn: (columnIndex: number) => Column|null
-  columnMenu?: MenuItem[]
+  columnMenu?: ColumnMenu
   columnCount: number
   overscanColumnCount: number
   getColumnWidth: (columnIndex: number) => number

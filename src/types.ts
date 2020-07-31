@@ -1,4 +1,5 @@
 import { MutableRefObject } from 'react'
+import { PopoverInfo } from 'react-tiny-popover'
 
 export interface GridProps {
   isLoading?: boolean
@@ -15,14 +16,14 @@ export interface GridProps {
   }) => void
   rowCount: number
   rowHeight: number
-  rowMenu?: MenuItem[]|((context: { rowIndex: number }) => React.ReactNode)
+  rowMenu?: RowMenu
   overscanRowCount: number
   rowGetter: (rowIndex: number) => Record<string, any>
   onAddRow?: (count: number) => void
   onRowClick?: (columnIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 
   columns: Column[]
-  columnMenu?: MenuItem[]|((context: { columnIndex: number }) => React.ReactNode)
+  columnMenu?: ColumnMenu
   estimatedColumnWidth: number
   overscanColumnCount: number
   onColumnResize?: (columnIndex: number, offset: number) => void
@@ -34,6 +35,10 @@ export interface GridProps {
   scrolledToCell?: CellRef
   editingCell?: CellEditRef|null
 }
+
+export type ColumnMenu = MenuItem[]|((context: { columnIndex: number }, info: PopoverInfo) => JSX.Element)
+export type RowMenu = MenuItem[]|((context: { rowIndex: number }, info: PopoverInfo) => JSX.Element)
+
 export interface GridState {
   selectedCell: CellRef
   scrolledToCell: CellRef
