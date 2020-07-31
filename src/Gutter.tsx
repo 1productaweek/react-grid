@@ -36,7 +36,7 @@ const renderGutterCell = ({
     <GutterCell
       key={key}
       rowIndex={rowIndex}
-      menuData={rowMenu}
+      menu={rowMenu}
       style={style}
       offset={gutterOffset}
       onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onRowClick && onRowClick(rowIndex, e)}

@@ -40,7 +40,7 @@ export const renderHeaderCell = ({
       style={style}
       column={column}
       columnIndex={columnIndex}
-      menuData={columnMenu}
+      menu={columnMenu}
       onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onColumnClick && onColumnClick(columnIndex, e)}
       onResize={onColumnResize ? (offset: number) => onColumnResize(columnIndex - 1, offset) : undefined}
     />

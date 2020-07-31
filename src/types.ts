@@ -15,14 +15,14 @@ export interface GridProps {
   }) => void
   rowCount: number
   rowHeight: number
-  rowMenu?: MenuItem[]
+  rowMenu?: MenuItem[]|((context: { rowIndex: number }) => React.ReactNode)
   overscanRowCount: number
   rowGetter: (rowIndex: number) => Record<string, any>
   onAddRow?: (count: number) => void
   onRowClick?: (columnIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 
   columns: Column[]
-  columnMenu?: MenuItem[]
+  columnMenu?: MenuItem[]|((context: { columnIndex: number }) => React.ReactNode)
   estimatedColumnWidth: number
   overscanColumnCount: number
   onColumnResize?: (columnIndex: number, offset: number) => void

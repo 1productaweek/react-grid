@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { css } from '@emotion/core'
 import { useTheme } from 'emotion-theming'
+import isFunction from 'lodash/isFunction'
 import Popover from 'react-tiny-popover'
 import Menu from './Menu'
 import sharedStyles from './styles'
@@ -10,14 +11,14 @@ import { Column, MenuItem } from './types'
 export interface HeaderCellProps {
   column: Column
   columnIndex: number
-  menuData?: MenuItem[]
+  menu?: MenuItem[]
   onResize?: (offset: number) => void
   onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   style?: React.CSSProperties
 }
 
 function HeaderCell ({
-  column, style, menuData, onResize, columnIndex, onClick,
+  column, style, menu, onResize, columnIndex, onClick,
 }: HeaderCellProps) {
   const theme: any = useTheme()
   const [menuIsOpen, setMenuIsOpen] = useState(false)
@@ -25,7 +26,7 @@ function HeaderCell ({
 
   const onContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
-    if (!menuData) return
+    if (!menu) return
     setMenuIsOpen(true)
   }
 
@@ -56,15 +57,15 @@ function HeaderCell ({
     </div>
   )
 
-  if (!menuData) return el
+  if (!menu) return el
 
   return (
     <Popover
       position='bottom'
       containerStyle={{ zIndex: '10' }}
-      content={() => (
+      content={isFunction(menu) ? () => menu({ columnIndex }) : () => (
         <Menu
-          data={menuData}
+          data={menu}
           onRequestClose={() => setMenuIsOpen(false)}
           context={{ columnIndex: columnIndex - 1, ref: ref.current }}
         />

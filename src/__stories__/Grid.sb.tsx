@@ -92,6 +92,79 @@ storiesOf('Grid', module)
       />
     </div>
   ))
+  .add('Column Menu (Array)', () => (
+    <div style={styles}>
+      <Grid
+        columns={columns}
+        rowCount={rows.length}
+        rowGetter={i => rows[i]}
+        columnMenu={[{
+          text: 'Change Type',
+          onClick: action('change-type'),
+        }, {
+          text: 'Insert Left',
+          onClick: action('insert-left'),
+        }, {
+          text: 'Insert Right',
+          onClick: action('insert-right'),
+        }, {
+          text: 'Delete',
+          onClick: action('delete'),
+        }]}
+      />
+    </div>
+  ))
+  .add('Column Menu (Fn)', () => (
+    <div style={styles}>
+      <Grid
+        columns={columns}
+        rowCount={rows.length}
+        rowGetter={i => rows[i]}
+        columnMenu={({ columnIndex }) => {
+          return (
+            <div style={{ background: '#fff', padding: '1em', border: '1px solid #eee' }}>
+              This column is index: {columnIndex}
+            </div>
+          )
+        }}
+      />
+    </div>
+  ))
+  .add('Row Menu (Array)', () => (
+    <div style={styles}>
+      <Grid
+        columns={columns}
+        rowCount={rows.length}
+        rowGetter={i => rows[i]}
+        rowMenu={[{
+          text: 'Insert Above',
+          onClick: action('insert-above'),
+        }, {
+          text: 'Insert Below',
+          onClick: action('insert-below'),
+        }, {
+          text: 'Delete',
+          onClick: action('delete'),
+        }]}
+      />
+    </div>
+  ))
+  .add('Row Menu (Fn)', () => (
+    <div style={styles}>
+      <Grid
+        columns={columns}
+        rowCount={rows.length}
+        rowGetter={i => rows[i]}
+        rowMenu={({ rowIndex }) => {
+          return (
+            <div style={{ background: '#fff', padding: '1em', border: '1px solid #eee' }}>
+              This row is index: {rowIndex}
+            </div>
+          )
+        }}
+      />
+    </div>
+  ))
   .add('Selected Cell', () => (
     <div style={styles}>
       <Grid

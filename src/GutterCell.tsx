@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { css } from '@emotion/core'
+import isFunction from 'lodash/isFunction'
 import { useTheme } from 'emotion-theming'
 import Popover from 'react-tiny-popover'
 import Menu from './Menu'
@@ -8,20 +9,20 @@ import { MenuItem } from './types'
 
 export interface GutterCellProps {
   rowIndex: number
-  menuData?: MenuItem[]
+  menu?: MenuItem[]
   offset?: number
   style?: React.CSSProperties
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
-function GutterCell ({ rowIndex, menuData, offset = 1, style, onClick }: GutterCellProps) {
+function GutterCell ({ rowIndex, menu, offset = 1, style, onClick }: GutterCellProps) {
   const [isOpen, setIsOpen] = useState(false)
   const theme = useTheme()
   const ref = useRef<any>()
 
   const onContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
-    if (!menuData) return
+    if (!menu) return
     setIsOpen(true)
   }
 
@@ -39,7 +40,7 @@ function GutterCell ({ rowIndex, menuData, offset = 1, style, onClick }: GutterC
     </div>
   )
 
-  if (!menuData) {
+  if (!menu) {
     return el
   }
 
@@ -47,9 +48,9 @@ function GutterCell ({ rowIndex, menuData, offset = 1, style, onClick }: GutterC
     <Popover
       position='right'
       containerStyle={{ zIndex: '10' }}
-      content={() => (
+      content={isFunction(menu) ? () => menu({ rowIndex }) : () => (
         <Menu
-          data={menuData}
+          data={menu}
           onRequestClose={() => setIsOpen(false)}
           context={{ rowIndex, ref: ref.current }}
         />
