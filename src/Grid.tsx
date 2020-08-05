@@ -27,6 +27,8 @@ class VGrid extends React.Component<GridProps, GridState> {
 
     rowHeight: 28,
     overscanRowCount: 5,
+
+    cellGetter: get,
   }
 
   headerRef: null|Grid = null
@@ -63,7 +65,7 @@ class VGrid extends React.Component<GridProps, GridState> {
     if (!columnIndex || !rowIndex) return
     const column = this.getColumn(columnIndex)
     const row = this.props.rowGetter(rowIndex)
-    return column?.key ? get(row, column?.key) : null
+    return column?.key ? this.props.cellGetter(row, column?.key) : null
   }
 
   getColumn = (columnIndex: number) => {
@@ -229,6 +231,7 @@ class VGrid extends React.Component<GridProps, GridState> {
       overscanRowCount,
       onColumnResize,
       rowGetter,
+      cellGetter,
       columnMenu,
       rowMenu,
       onAddRow,
@@ -312,6 +315,7 @@ class VGrid extends React.Component<GridProps, GridState> {
                               <Body
                                 ref={ref => { this.bodyRef = ref }}
                                 rowGetter={rowGetter}
+                                cellGetter={cellGetter}
                                 overscanColumnCount={overscanColumnCount}
                                 overscanRowCount={overscanRowCount}
                                 onScroll={(pos) => {

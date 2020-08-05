@@ -9,7 +9,7 @@ import { Ref, CellRef, CellEditRef, Column } from './types'
 export interface BodyCellRenderProps extends GridCellProps, BodyProps {}
 
 const renderCell = ({
-  rowGetter, getColumn, onEditDone, rowCount, showAddRow, readOnly,
+  rowGetter, cellGetter, getColumn, onEditDone, rowCount, showAddRow, readOnly,
   columnIndex, selectedCell, editingCell, key, rowIndex, style, selectCell, editCell,
 }: BodyCellRenderProps) => {
   if (columnIndex < 1) return
@@ -28,7 +28,7 @@ const renderCell = ({
 
   if (!column || !row) return null
 
-  const value = isEditing && editingCell?.updatedValue ? editingCell.updatedValue : get(row, column?.key)
+  const value = isEditing && editingCell?.updatedValue ? editingCell.updatedValue : cellGetter(row, column?.key)
 
   const onSelectCell = () => {
     if (isEditing) return
@@ -80,6 +80,7 @@ export interface BodyProps {
   editingCell: CellEditRef|null
 
   rowGetter: (rowIndex: number) => Record<string, any>
+  cellGetter: (row: Record<string, any>, columnKey: string) => any
   rowCount: number
   rowHeight: number
   overscanRowCount: number

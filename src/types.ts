@@ -19,6 +19,7 @@ export interface GridProps {
   rowMenu?: RowMenu
   overscanRowCount: number
   rowGetter: (rowIndex: number) => Record<string, any>
+  cellGetter: (row: Record<string, any>, columnKey: string) => any
   onAddRow?: (count: number) => void
   onRowClick?: (columnIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 
